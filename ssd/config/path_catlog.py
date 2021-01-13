@@ -87,7 +87,15 @@ class DatasetCatalog:
             )
             return dict(factory="COCODataset", args=args)
         elif "clipart" in name:
+            clipart_root = DatasetCatalog.DATA_DIR
+            if 'CLIPART_ROOT' in os.environ:
+                clipart_root = os.environ['CLIPART_ROOT']
+
             attrs = DatasetCatalog.DATASETS[name]
-            return dict(factory="ClipArtDataset", args=attrs)
+            args = dict(
+                data_dir=os.path.join(clipart_root, attrs["data_dir"]),
+                split=attrs["split"],
+            )
+            return dict(factory="ClipArtDataset", args=args)
 
         raise RuntimeError("Dataset not available: {}".format(name))
