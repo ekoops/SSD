@@ -52,6 +52,14 @@ class DatasetCatalog:
             "data_dir": "val2014",
             "ann_file": "annotations/instances_val2014.json"
         },
+        'clipart_train': {
+            "data_dir": "clipart",
+            "split": "train"
+        },
+        'clipart_test': {
+            "data_dir": "clipart",
+            "split": "test"
+        },
     }
 
     @staticmethod
@@ -78,5 +86,8 @@ class DatasetCatalog:
                 ann_file=os.path.join(coco_root, attrs["ann_file"]),
             )
             return dict(factory="COCODataset", args=args)
+        elif "clipart" in name:
+            attrs = DatasetCatalog.DATASETS[name]
+            return dict(factory="ClipArtDataset", args=attrs)
 
         raise RuntimeError("Dataset not available: {}".format(name))
