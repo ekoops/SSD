@@ -3,7 +3,6 @@ MODEL:
 INPUT:
   IMAGE_SIZE: 300
 DATASETS:
-  TRAIN: ("clipart_train", )
   TEST: ("clipart_test", )
 SOLVER:
   MAX_ITER: 120000
@@ -12,4 +11,4 @@ SOLVER:
   BATCH_SIZE: 32
   LR: 1e-3
 
-OUTPUT_DIR: 'outputs/vgg_ssd300_clipart'
+OUTPUT_DIR: 'outputs/vgg_ssd300_voc0712'
