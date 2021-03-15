@@ -96,6 +96,8 @@ class VOCDataset(torch.utils.data.Dataset):
 
     def _read_image(self, image_id):
         image_file = os.path.join(self.data_dir, "JPEGImages", "%s.jpg" % image_id)
+        if not os.path.exists(image_file):
+            image_file = os.path.join(self.data_dir, "JPEGImages", "%s.png" % image_id)
         image = Image.open(image_file).convert("RGB")
         image = np.array(image)
         return image
