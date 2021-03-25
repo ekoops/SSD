@@ -1,13 +1,16 @@
 import argparse
 import logging
 import os
+import sys
 
 import torch
 import torch.distributed as dist
 
+from ssd.data.loaders import AdainLoader
+
 from ssd.engine.inference import do_evaluation
 from ssd.config import cfg
-from ssd.data.build import make_data_loader
+from ssd.data.build import make_data_loader, make_style_data_loader
 from ssd.engine.trainer import do_train
 from ssd.modeling.detector import build_detection_model
 from ssd.solver.build import make_optimizer, make_lr_scheduler
@@ -24,7 +27,8 @@ def train(cfg, args):
     device = torch.device(cfg.MODEL.DEVICE)
     model.to(device)
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank], output_device=args.local_rank)
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
+                                                          output_device=args.local_rank)
 
     lr = cfg.SOLVER.LR * args.num_gpus  # scale by num gpus
     optimizer = make_optimizer(cfg, model, lr)
@@ -39,7 +43,12 @@ def train(cfg, args):
     arguments.update(extra_checkpoint_data)
 
     max_iter = cfg.SOLVER.MAX_ITER // args.num_gpus
-    train_loader = make_data_loader(cfg, is_train=True, distributed=args.distributed, max_iter=max_iter, start_iter=arguments['iteration'])
+    train_loader = make_data_loader(cfg, is_train=True, distributed=args.distributed, max_iter=max_iter,
+                                    start_iter=arguments['iteration'])
+    if args.enable_style_transfer:
+        style_loader = make_style_data_loader(cfg, distributed=args.distributed, max_iter=max_iter,
+                                              start_iter=arguments['iteration'])
+        train_loader = AdainLoader(cfg=cfg, content_loader=train_loader, style_loader=style_loader)
 
     model = do_train(cfg, model, train_loader, optimizer, scheduler, checkpointer, device, arguments, args)
     return model
@@ -57,7 +66,8 @@ def main():
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument('--log_step', default=10, type=int, help='Print logs every log_step')
     parser.add_argument('--save_step', default=2500, type=int, help='Save checkpoint every save_step')
-    parser.add_argument('--eval_step', default=2500, type=int, help='Evaluate dataset every eval_step, disabled when eval_step < 0')
+    parser.add_argument('--eval_step', default=2500, type=int,
+                        help='Evaluate dataset every eval_step, disabled when eval_step < 0')
     parser.add_argument('--use_tensorboard', default=True, type=str2bool)
     parser.add_argument(
         "--skip-test",
@@ -71,7 +81,23 @@ def main():
         default=None,
         nargs=argparse.REMAINDER,
     )
+
+    # Style transfer arguments section
+    parser.add_argument(
+        "--enable_style_transfer",
+        dest="enable_style_transfer",
+        help="Enable style transferring using AdaIN",
+        action="store_true"
+    )
     args = parser.parse_args()
+
+    # Check style transfer arguments
+    if args.enable_style_transfer:
+        assert os.path.exists(cfg.ADAIN.IMPL_FOLDER)
+        assert len(cfg.ADAIN.DATASETS.STYLE) > 0
+        assert os.path.exists(cfg.ADAIN.MODEL.BACKBONE.VGG)
+        assert os.path.exists(cfg.ADAIN.MODEL.BACKBONE.DECODER)
+
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     args.distributed = num_gpus > 1
     args.num_gpus = num_gpus

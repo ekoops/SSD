@@ -94,3 +94,17 @@ _C.TEST.MAX_PER_IMAGE = 100
 _C.TEST.BATCH_SIZE = 10
 
 _C.OUTPUT_DIR = 'outputs'
+
+# ---------------------------------------------------------------------------- #
+# AdaIN
+# ---------------------------------------------------------------------------- #
+# List of the dataset names for styling training images, as present in paths_catalog.py
+_C.ADAIN.DATASETS.STYLE = ()
+_C.ADAIN.IMPL_FOLDER = ""
+_C.ADAIN.MODEL.BACKBONE.VGG = ""
+_C.ADAIN.MODEL.BACKBONE.DECODER = ""
+_C.ADAIN.INPUT.STYLE.SIZE = 512
+_C.ADAIN.INPUT.STYLE.CROP = True
+_C.ADAIN.INPUT.STYLE.PRESERVE_COLOR = True
+_C.ADAIN.MODEL.ALPHA = 1.0
+_C.ADAIN.LOADER.TRANSFER_RATIO = 1.0

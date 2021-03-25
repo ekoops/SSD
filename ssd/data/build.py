@@ -1,10 +1,11 @@
 import torch
+
 from torch.utils.data import DataLoader
 from torch.utils.data.dataloader import default_collate
 
 from ssd.data import samplers
 from ssd.data.datasets import build_dataset
-from ssd.data.transforms import build_transforms, build_target_transform
+from ssd.data.transforms import build_transforms, build_style_transform, build_target_transform
 from ssd.structures.container import Container
 
 
@@ -27,11 +28,34 @@ class BatchCollator:
         return images, targets, img_ids
 
 
+def make_style_data_loader(cfg, distributed=False, max_iter=None, start_iter=0):
+    train_transform = build_style_transform(cfg)
+    dataset_list = cfg.DATASETS.STYLE
+    datasets = build_dataset(dataset_list, transform=train_transform, is_train=True)
+    data_loaders = []
+    for dataset in datasets:
+        if distributed:
+            sampler = samplers.DistributedSampler(dataset, shuffle=True)
+        else:
+            sampler = torch.utils.data.RandomSampler(dataset)
+
+        batch_sampler = torch.utils.data.sampler.BatchSampler(
+            sampler=sampler, batch_size=cfg.SOLVER.BATCH_SIZE, drop_last=False
+        )
+        if max_iter is not None:
+            batch_sampler = samplers.IterationBasedBatchSampler(
+                batch_sampler, num_iterations=max_iter, start_iter=start_iter)
+        data_loader = DataLoader(dataset, num_workers=cfg.DATA_LOADER.NUM_WORKERS, batch_sampler=batch_sampler,
+                                 pin_memory=cfg.DATA_LOADER.PIN_MEMORY, collate_fn=BatchCollator(True))
+        data_loaders.append(data_loader)
+
+
 def make_data_loader(cfg, is_train=True, distributed=False, max_iter=None, start_iter=0):
     train_transform = build_transforms(cfg, is_train=is_train)
     target_transform = build_target_transform(cfg) if is_train else None
     dataset_list = cfg.DATASETS.TRAIN if is_train else cfg.DATASETS.TEST
-    datasets = build_dataset(dataset_list, transform=train_transform, target_transform=target_transform, is_train=is_train)
+    datasets = build_dataset(dataset_list, transform=train_transform, target_transform=target_transform,
+                             is_train=is_train)
 
     shuffle = is_train
 
@@ -48,7 +72,8 @@ def make_data_loader(cfg, is_train=True, distributed=False, max_iter=None, start
         batch_size = cfg.SOLVER.BATCH_SIZE if is_train else cfg.TEST.BATCH_SIZE
         batch_sampler = torch.utils.data.sampler.BatchSampler(sampler=sampler, batch_size=batch_size, drop_last=False)
         if max_iter is not None:
-            batch_sampler = samplers.IterationBasedBatchSampler(batch_sampler, num_iterations=max_iter, start_iter=start_iter)
+            batch_sampler = samplers.IterationBasedBatchSampler(batch_sampler, num_iterations=max_iter,
+                                                                start_iter=start_iter)
 
         data_loader = DataLoader(dataset, num_workers=cfg.DATA_LOADER.NUM_WORKERS, batch_sampler=batch_sampler,
                                  pin_memory=cfg.DATA_LOADER.PIN_MEMORY, collate_fn=BatchCollator(is_train))
