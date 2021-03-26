@@ -73,7 +73,7 @@ def do_evaluation(cfg, model, distributed, **kwargs):
         model = model.module
     model.eval()
     device = torch.device(cfg.MODEL.DEVICE)
-    data_loaders_val = make_data_loader(cfg, is_train=False, distributed=distributed)
+    data_loaders_val = make_data_loader(cfg, phase="test", distributed=distributed)
     eval_results = []
     for dataset_name, data_loader in zip(cfg.DATASETS.TEST, data_loaders_val):
         output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)

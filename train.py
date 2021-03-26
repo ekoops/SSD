@@ -10,7 +10,7 @@ from ssd.data.loaders import AdainLoader
 
 from ssd.engine.inference import do_evaluation
 from ssd.config import cfg
-from ssd.data.build import make_data_loader, make_style_data_loader
+from ssd.data.build import make_data_loader
 from ssd.engine.trainer import do_train
 from ssd.modeling.detector import build_detection_model
 from ssd.solver.build import make_optimizer, make_lr_scheduler
@@ -43,11 +43,11 @@ def train(cfg, args):
     arguments.update(extra_checkpoint_data)
 
     max_iter = cfg.SOLVER.MAX_ITER // args.num_gpus
-    train_loader = make_data_loader(cfg, is_train=True, distributed=args.distributed, max_iter=max_iter,
+    train_loader = make_data_loader(cfg, phase="train", distributed=args.distributed, max_iter=max_iter,
                                     start_iter=arguments['iteration'])
     if args.enable_style_transfer:
-        style_loader = make_style_data_loader(cfg, distributed=args.distributed, max_iter=max_iter,
-                                              start_iter=arguments['iteration'])
+        style_loader = make_data_loader(cfg, phase="style", distributed=args.distributed, max_iter=max_iter,
+                                        start_iter=arguments['iteration'])
         train_loader = AdainLoader(cfg=cfg, content_loader=train_loader, style_loader=style_loader)
 
     model = do_train(cfg, model, train_loader, optimizer, scheduler, checkpointer, device, arguments, args)

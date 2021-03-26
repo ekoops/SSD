@@ -1,6 +1,7 @@
 from torch.utils.data import DataLoader
 import numpy as np
 import torch
+from torch.nn.functional import interpolate
 import os
 
 
@@ -8,6 +9,7 @@ class AdainLoader(DataLoader):
     def __init__(self, cfg, content_loader, style_loader):
         super().__init__()
 
+        self.original_size = cfg.INPUT.IMAGE_SIZE
         self.content_loader = content_loader
         self.style_loader = style_loader
         self.alpha = cfg.ADAIN.MODEL.ALPHA
@@ -35,7 +37,7 @@ class AdainLoader(DataLoader):
 
     def __iter__(self):
         for (train_batch, train_targets, train_indexes), \
-                (style_batch, _, _) in zip(self.content_loader, self.style_loader):
+            (style_batch, _, _) in zip(self.content_loader, self.style_loader):
             train_batch = self.style_batch(
                 content_batch=train_batch,
                 style_batch=style_batch,
@@ -53,12 +55,15 @@ class AdainLoader(DataLoader):
                 style_image = style_image.to(self.device).unsqueeze(0)
                 content_image = content_image.to(self.device).unsqueeze(0)
                 with torch.no_grad():
-                    content_batch[idx] = self.style_transfer(
+                    output = self.style_transfer(
                         vgg=self.adain_net.vgg,
                         decoder=self.adain_net.decoder,
                         content=content_image,
                         style=style_image,
                         alpha=self.alpha
                     ).cpu()
-                # qui posso fare in caso interpolation(train_batch)
+                    content_batch[idx] = interpolate(
+                        output,
+                        (self.original_size, self.original_size)
+                    )
         return content_batch
