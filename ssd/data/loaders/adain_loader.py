@@ -5,10 +5,8 @@ from torch.nn.functional import interpolate
 import os
 
 
-class AdainLoader(DataLoader):
+class AdainLoader():
     def __init__(self, cfg, content_loader, style_loader):
-        super().__init__()
-
         self.original_size = cfg.INPUT.IMAGE_SIZE
         self.content_loader = content_loader
         self.style_loader = style_loader
