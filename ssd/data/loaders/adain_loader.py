@@ -16,9 +16,9 @@ class AdainLoader():
         self.device = torch.device(cfg.MODEL.DEVICE)
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        sys.path.insert(1, cfg.ADAIN.IMPL_FOLDER)
+        sys.path.insert(0, cfg.ADAIN.IMPL_FOLDER)
 
-        from test import get_net, style_transfer, coral
+        from AdaIN.test import get_net, style_transfer, coral
         vgg_path = cfg.ADAIN.MODEL.VGG
         decoder_path = cfg.ADAIN.MODEL.DECODER
         # 1) Import get_net function in order to
@@ -32,7 +32,7 @@ class AdainLoader():
         self.preserve_color = cfg.ADAIN.INPUT.PRESERVE_COLOR
         self.coral = coral if self.preserve_color else None
 
-        sys.path.pop(1)
+        sys.path.pop(0)
         #os.chdir(dir_path)
 
     def __iter__(self):
