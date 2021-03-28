@@ -46,6 +46,9 @@ class ClipArtDataset(torch.utils.data.Dataset):
             boxes=boxes,
             labels=labels,
         )
+        print("<<<<<<<<<<<<<<<<<<")
+        print("Riccardo")
+        print("<<<<<<<<<<<<<<<<<<")
         return image, targets, index
 
     def get_annotation(self, index):
