@@ -8,6 +8,10 @@ from torchvision import transforms as tf
 #     return nil, nil, transform(image)
 # }
 
+def style_transform(transform, image, boxes, label):
+    return transform(image), boxes, label
+
+
 def build_transforms(cfg, phase):
     if phase == "train":
         transform = [
@@ -41,7 +45,11 @@ def build_transforms(cfg, phase):
         transform = Compose(transform)
     else:
         transform = tf.Compose(transform)
-        transform = lambda image, boxes, label: (transform(image), boxes, label)
+        transform = lambda image, boxes, label: (
+            transform(image),
+            boxes,
+            label
+        )
     return transform
 
 
