@@ -1,7 +1,7 @@
 from ssd.modeling.anchors.prior_box import PriorBox
 from .target_transform import SSDTargetTransform
 from .transforms import *
-from torchvision import transforms
+from torchvision import transforms as tf
 
 
 def build_transforms(cfg, phase):
@@ -22,9 +22,9 @@ def build_transforms(cfg, phase):
         crop = cfg.ADAIN.INPUT.STYLE_CROP
         transform = []
         if style_size != 0:
-            transform.append(transforms.Resize(style_size))
+            transform.append(tf.Resize(style_size))
         if crop:
-            transform.append(transforms.CenterCrop(style_size))
+            transform.append(tf.CenterCrop(style_size))
     elif phase == "test":
         transform = [
             Resize(cfg.INPUT.IMAGE_SIZE),
@@ -33,7 +33,10 @@ def build_transforms(cfg, phase):
         ]
     else:
         raise RuntimeError("You shouldn't be here")
-    transform = Compose(transform)
+    if phase != "style":
+        transform = Compose(transform)
+    else:
+        transform = tf.Compose(transform)
     return transform
 
 
