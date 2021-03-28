@@ -37,11 +37,9 @@ class AdainLoader():
     def __iter__(self):
         print(type(self.content_loader))
         print(type(self.style_loader))
-        for [train_batch, train_targets, train_indexes], [style_batch, _, _] in zip(self.content_loader, self.style_loader):
-            print(type(train_batch))
-            print(len(train_batch))
-            print(type(style_batch))
-            print(len(style_batch))
+        for y in self.style_loader:
+            print(type(y))
+            print(len(y))
             assert False
         # for x, y in zip(self.content_loader, self.style_loader):
         #     print(type(x))
