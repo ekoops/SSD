@@ -35,8 +35,7 @@ class AdainLoader():
         #os.chdir(dir_path)
 
     def __iter__(self):
-        for (train_batch, train_targets, train_indexes), \
-            (style_batch, _, _) in zip(self.content_loader, self.style_loader):
+        for (train_batch, train_targets, train_indexes), (style_batch, _, _) in zip(self.content_loader, self.style_loader):
             train_batch = self.style_batch(
                 content_batch=train_batch,
                 style_batch=style_batch,
