@@ -29,7 +29,7 @@ def build_transforms(cfg, phase):
         transform.append(tf.ToTensor())
         transform = tf.Compose(transform)
         print("<<<<<<<<<<<<<<<<<<<<<<")
-        print(inspect.getargspec(transform))
+        print(inspect.signature(transform))
         print("<<<<<<<<<<<<<<<<<<<<<<")
         return lambda image, boxes, labels: (
             transform(image),
