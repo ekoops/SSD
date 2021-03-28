@@ -91,15 +91,6 @@ def main():
     )
     args = parser.parse_args()
 
-    # Check style transfer arguments
-    if args.enable_style_transfer:
-        print(cfg.ADAIN)
-        print(cfg.ADAIN.IMPL_FOLDER)
-        assert os.path.exists(cfg.ADAIN.IMPL_FOLDER)
-        assert len(cfg.ADAIN.DATASETS.STYLE) > 0
-        assert os.path.exists(cfg.ADAIN.MODEL.VGG)
-        assert os.path.exists(cfg.ADAIN.MODEL.DECODER)
-
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     args.distributed = num_gpus > 1
     args.num_gpus = num_gpus
@@ -116,6 +107,14 @@ def main():
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
     cfg.freeze()
+
+    # Check style transfer arguments
+    if args.enable_style_transfer:
+        print(cfg.ADAIN)
+        assert os.path.exists(cfg.ADAIN.IMPL_FOLDER)
+        assert len(cfg.ADAIN.DATASETS.STYLE) > 0
+        assert os.path.exists(cfg.ADAIN.MODEL.VGG)
+        assert os.path.exists(cfg.ADAIN.MODEL.DECODER)
 
     if cfg.OUTPUT_DIR:
         mkdir(cfg.OUTPUT_DIR)
