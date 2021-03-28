@@ -4,6 +4,10 @@ from .transforms import *
 from torchvision import transforms as tf
 
 
+# (image, boxes, label) => {
+#     return nil, nil, transform(image)
+# }
+
 def build_transforms(cfg, phase):
     if phase == "train":
         transform = [
@@ -37,6 +41,7 @@ def build_transforms(cfg, phase):
         transform = Compose(transform)
     else:
         transform = tf.Compose(transform)
+        transform = lambda image, boxes, label: (transform(image), boxes, label)
     return transform
 
 
