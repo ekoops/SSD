@@ -12,6 +12,10 @@ SOLVER:
   BATCH_SIZE: 32
   LR: 1e-5
 ADAIN:
+  INPUT:
+    STYLE:
+      CROP: True
+      PRESERVE_COLOR: True
   IMPL_FOLDER: "AdaIN"
   DATASETS:
     STYLE: ("clipart_trainval", )
