@@ -93,6 +93,8 @@ def main():
 
     # Check style transfer arguments
     if args.enable_style_transfer:
+        print(cfg.ADAIN)
+        print(cfg.ADAIN.IMPL_FOLDER)
         assert os.path.exists(cfg.ADAIN.IMPL_FOLDER)
         assert len(cfg.ADAIN.DATASETS.STYLE) > 0
         assert os.path.exists(cfg.ADAIN.MODEL.VGG)
