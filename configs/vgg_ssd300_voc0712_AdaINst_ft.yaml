@@ -18,7 +18,7 @@ ADAIN:
     STYLE_CROP: True
     PRESERVE_COLOR: True
   DATASETS:
-    STYLE: ("clipart_trainval", )
+    STYLE: ("clipart_train", )
   LOADER:
     TRANSFER_RATIO: 1.0
   MODEL:
