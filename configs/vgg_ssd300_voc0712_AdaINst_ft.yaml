@@ -22,7 +22,7 @@ ADAIN:
   LOADER:
     TRANSFER_RATIO: 1.0
   MODEL:
-    VGG: "AdaIN/models/vgg_normalised.pth"
+    VGG: "AdaIN/models/vgg_normalized.pth"
     DECODER: "AdaIN/models/decoder.pth"
     ALPHA: 1.0
 
