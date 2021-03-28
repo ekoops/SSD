@@ -95,8 +95,8 @@ def main():
     if args.enable_style_transfer:
         assert os.path.exists(cfg.ADAIN.IMPL_FOLDER)
         assert len(cfg.ADAIN.DATASETS.STYLE) > 0
-        assert os.path.exists(cfg.ADAIN.MODEL.BACKBONE.VGG)
-        assert os.path.exists(cfg.ADAIN.MODEL.BACKBONE.DECODER)
+        assert os.path.exists(cfg.ADAIN.MODEL.VGG)
+        assert os.path.exists(cfg.ADAIN.MODEL.DECODER)
 
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     args.distributed = num_gpus > 1

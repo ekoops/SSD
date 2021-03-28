@@ -20,8 +20,8 @@ class AdainLoader(DataLoader):
         os.chdir(cfg.ADAIN.IMPL_FOLDER)
 
         from test import get_net, style_transfer, coral
-        vgg_path = cfg.ADAIN.MODEL.BACKBONE.VGG
-        decoder_path = cfg.ADAIN.MODEL.BACKBONE.DECODER
+        vgg_path = cfg.ADAIN.MODEL.VGG
+        decoder_path = cfg.ADAIN.MODEL.DECODER
         # 1) Import get_net function in order to
         # prepare the AdaINNet.
         self.adain_net = get_net(decoder_path=decoder_path, vgg_path=vgg_path)
@@ -30,7 +30,7 @@ class AdainLoader(DataLoader):
         self.style_transfer = style_transfer
         # 3) Import coral function in order to
         # preserve color
-        self.preserve_color = cfg.ADAIN.INPUT.STYLE.PRESERVE_COLOR
+        self.preserve_color = cfg.ADAIN.INPUT.PRESERVE_COLOR
         self.coral = coral if self.preserve_color else None
 
         os.chdir(dir_path)

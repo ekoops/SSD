@@ -18,8 +18,8 @@ def build_transforms(cfg, phase):
             ToTensor(),
         ]
     elif phase == "style":
-        style_size = cfg.ADAIN.INPUT.STYLE.SIZE
-        crop = cfg.ADAIN.INPUT.STYLE.CROP
+        style_size = cfg.ADAIN.INPUT.STYLE_SIZE
+        crop = cfg.ADAIN.INPUT.STYLE_CROP
         transform = []
         if style_size != 0:
             transform.append(transforms.Resize(style_size))
