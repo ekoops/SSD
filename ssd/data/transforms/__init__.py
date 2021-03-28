@@ -1,23 +1,23 @@
 from ssd.modeling.anchors.prior_box import PriorBox
 from .target_transform import SSDTargetTransform
-import transforms as ctf
+from .transforms import *
 from torchvision import transforms as tf
 import inspect
 
 def build_transforms(cfg, phase):
     if phase == "train":
         transform = [
-            ctf.ConvertFromInts(),
-            ctf.PhotometricDistort(),
-            ctf.Expand(cfg.INPUT.PIXEL_MEAN),
-            ctf.RandomSampleCrop(),
-            ctf.RandomMirror(),
-            ctf.ToPercentCoords(),
-            ctf.Resize(cfg.INPUT.IMAGE_SIZE),
-            ctf.SubtractMeans(cfg.INPUT.PIXEL_MEAN),
-            ctf.ToTensor(),
+            ConvertFromInts(),
+            PhotometricDistort(),
+            Expand(cfg.INPUT.PIXEL_MEAN),
+            RandomSampleCrop(),
+            RandomMirror(),
+            ToPercentCoords(),
+            Resize(cfg.INPUT.IMAGE_SIZE),
+            SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            ToTensor(),
         ]
-        return ctf.Compose(transform)
+        return Compose(transform)
     elif phase == "style":
         style_size = cfg.ADAIN.INPUT.STYLE_SIZE
         crop = cfg.ADAIN.INPUT.STYLE_CROP
@@ -38,11 +38,11 @@ def build_transforms(cfg, phase):
         )
     elif phase == "test":
         transform = [
-            ctf.Resize(cfg.INPUT.IMAGE_SIZE),
-            ctf.SubtractMeans(cfg.INPUT.PIXEL_MEAN),
-            ctf.ToTensor()
+            Resize(cfg.INPUT.IMAGE_SIZE),
+            SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            ToTensor()
         ]
-        return ctf.Compose(transform)
+        return Compose(transform)
     else:
         raise RuntimeError("You shouldn't be here")
 
