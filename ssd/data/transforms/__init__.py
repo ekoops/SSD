@@ -21,11 +21,12 @@ def build_transforms(cfg, phase):
     elif phase == "style":
         style_size = cfg.ADAIN.INPUT.STYLE_SIZE
         crop = cfg.ADAIN.INPUT.STYLE_CROP
-        transform = [ToTensor()]
+        transform = []
         if style_size != 0:
             transform.append(Resize(style_size))
         if crop:
             transform.append(tf.CenterCrop(style_size))
+        transform.append(ToTensor())
         return Compose(transform)
     elif phase == "test":
         transform = [
