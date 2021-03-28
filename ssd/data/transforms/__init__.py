@@ -1,30 +1,23 @@
 from ssd.modeling.anchors.prior_box import PriorBox
 from .target_transform import SSDTargetTransform
-from .transforms import *
+import transforms as ctf
 from torchvision import transforms as tf
-
-
-# (image, boxes, label) => {
-#     return nil, nil, transform(image)
-# }
-
-def style_transform(transform, image, boxes, label):
-    return transform(image), boxes, label
-
+import inspect
 
 def build_transforms(cfg, phase):
     if phase == "train":
         transform = [
-            ConvertFromInts(),
-            PhotometricDistort(),
-            Expand(cfg.INPUT.PIXEL_MEAN),
-            RandomSampleCrop(),
-            RandomMirror(),
-            ToPercentCoords(),
-            Resize(cfg.INPUT.IMAGE_SIZE),
-            SubtractMeans(cfg.INPUT.PIXEL_MEAN),
-            ToTensor(),
+            ctf.ConvertFromInts(),
+            ctf.PhotometricDistort(),
+            ctf.Expand(cfg.INPUT.PIXEL_MEAN),
+            ctf.RandomSampleCrop(),
+            ctf.RandomMirror(),
+            ctf.ToPercentCoords(),
+            ctf.Resize(cfg.INPUT.IMAGE_SIZE),
+            ctf.SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            ctf.ToTensor(),
         ]
+        return ctf.Compose(transform)
     elif phase == "style":
         style_size = cfg.ADAIN.INPUT.STYLE_SIZE
         crop = cfg.ADAIN.INPUT.STYLE_CROP
@@ -33,24 +26,25 @@ def build_transforms(cfg, phase):
             transform.append(tf.Resize(style_size))
         if crop:
             transform.append(tf.CenterCrop(style_size))
-    elif phase == "test":
-        transform = [
-            Resize(cfg.INPUT.IMAGE_SIZE),
-            SubtractMeans(cfg.INPUT.PIXEL_MEAN),
-            ToTensor()
-        ]
-    else:
-        raise RuntimeError("You shouldn't be here")
-    if phase != "style":
-        transform = Compose(transform)
-    else:
+        transform.append(tf.ToTensor())
         transform = tf.Compose(transform)
-        transform = lambda image, boxes, label: (
+        print("<<<<<<<<<<<<<<<<<<<<<<")
+        print(inspect.getargspec(transform))
+        print("<<<<<<<<<<<<<<<<<<<<<<")
+        return lambda image, boxes, labels: (
             transform(image),
             boxes,
-            label
+            labels
         )
-    return transform
+    elif phase == "test":
+        transform = [
+            ctf.Resize(cfg.INPUT.IMAGE_SIZE),
+            ctf.SubtractMeans(cfg.INPUT.PIXEL_MEAN),
+            ctf.ToTensor()
+        ]
+        return ctf.Compose(transform)
+    else:
+        raise RuntimeError("You shouldn't be here")
 
 
 def build_target_transform(cfg):
