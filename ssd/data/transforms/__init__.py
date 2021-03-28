@@ -21,12 +21,11 @@ def build_transforms(cfg, phase):
     elif phase == "style":
         style_size = cfg.ADAIN.INPUT.STYLE_SIZE
         crop = cfg.ADAIN.INPUT.STYLE_CROP
-        transform = []
+        transform = [tf.ToTensor()]
         if style_size != 0:
             transform.append(tf.Resize(style_size))
         if crop:
             transform.append(tf.CenterCrop(style_size))
-        transform.append(tf.ToTensor())
         transform = tf.Compose(transform)
         print("<<<<<<<<<<<<<<<<<<<<<<")
         print(inspect.signature(transform))
