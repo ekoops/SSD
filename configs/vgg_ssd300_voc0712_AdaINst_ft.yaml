@@ -15,7 +15,7 @@ ADAIN:
   IMPL_FOLDER: "AdaIN"
   INPUT:
     STYLE_SIZE: 512
-    STYLE_CROP: True
+    STYLE_CROP: False
     PRESERVE_COLOR: True
   DATASETS:
     STYLE: ("clipart_train", )
