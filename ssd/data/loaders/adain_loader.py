@@ -1,4 +1,3 @@
-from torch.utils.data import DataLoader
 import numpy as np
 import torch
 from torch.nn.functional import interpolate
@@ -45,7 +44,7 @@ class AdainLoader():
             yield train_batch, train_targets, train_indexes
 
     def __len__(self):
-        return self.content_loader.__len__
+        return self.content_loader.__len__()
 
     def style_batch(self, content_batch, style_batch):
         for idx, (content_image, style_image) in enumerate(zip(content_batch, style_batch)):
