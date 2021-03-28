@@ -32,8 +32,8 @@ def build_transforms(cfg, phase):
         print("<<<<<<<<<<<<<<<<<<<<<<")
         return lambda image, boxes, labels: (
             transform(image),
-            boxes,
-            labels
+            None,
+            None
         )
     elif phase == "test":
         transform = [
