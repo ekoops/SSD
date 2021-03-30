@@ -32,27 +32,16 @@ class AdainLoader():
         self.coral = coral if self.preserve_color else None
 
         sys.path.pop(0)
-        #os.chdir(dir_path)
+        # os.chdir(dir_path)
 
     def __iter__(self):
-        # print(type(self.content_loader))
-        # print(type(self.style_loader))
-        for y in self.style_loader:
-            print(type(y))
-            print(len(y))
-            assert False
-        # for x, y in zip(self.content_loader, self.style_loader):
-        #     print(type(x))
-        #     print(type(y))
-        #     print(len(x))
-        #     print(len(y))
-        #     assert False
-        # for (train_batch, train_targets, train_indexes), (style_batch, _, _) in zip(self.content_loader, self.style_loader):
-        #     train_batch = self.style_batch(
-        #         content_batch=train_batch,
-        #         style_batch=style_batch,
-        #     )
-        #     yield train_batch, train_targets, train_indexes
+        for (train_batch, train_targets, train_indexes), \
+                (style_batch, _, _) in zip(self.content_loader, self.style_loader):
+            train_batch = self.style_batch(
+                content_batch=train_batch,
+                style_batch=style_batch,
+            )
+            yield train_batch, train_targets, train_indexes
 
     def __len__(self):
         return self.content_loader.__len__()
