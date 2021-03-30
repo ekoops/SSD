@@ -134,7 +134,7 @@ def main():
     if not args.skip_test:
         logger.info('Start evaluating...')
         torch.cuda.empty_cache()  # speed up evaluating after training finished
-        do_evaluation(cfg, model, distributed=args.distributed)
+        return do_evaluation(cfg, model, distributed=args.distributed)
 
 
 if __name__ == '__main__':
