@@ -35,7 +35,7 @@ def get_datasets(cfg, phase):
         dataset_list = cfg.DATASETS.TRAIN
     elif phase == "style":
         data_transform = build_transforms(cfg, phase="style")
-        target_transform = build_target_transform(cfg)
+        target_transform = None
         dataset_list = cfg.ADAIN.DATASETS.STYLE
     elif phase == "test":
         data_transform = build_transforms(cfg, phase="test")

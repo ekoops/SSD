@@ -18,12 +18,18 @@ class IterationBasedBatchSampler(BatchSampler):
             # if the underlying sampler has a set_epoch method, like
             # DistributedSampler, used for making each process see
             # a different split of the dataset, then set it
+            print("<<<<<<<<<<<<")
+            print("START BASED_BATCH_SAMPLER")
+            print("<<<<<<<<<<<<")
             if hasattr(self.batch_sampler.sampler, "set_epoch"):
                 self.batch_sampler.sampler.set_epoch(iteration)
             for batch in self.batch_sampler:
                 iteration += 1
                 if iteration > self.num_iterations:
                     break
+                print("<<<<<<<<<<<<")
+                print("END BASED_BATCH_SAMPLER")
+                print("<<<<<<<<<<<<")
                 yield batch
 
     def __len__(self):
