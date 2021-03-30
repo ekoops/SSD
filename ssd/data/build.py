@@ -73,7 +73,7 @@ def make_data_loader(cfg, phase, distributed=False, max_iter=None, start_iter=0)
                                                                 start_iter=start_iter)
 
         data_loader = DataLoader(dataset, num_workers=cfg.DATA_LOADER.NUM_WORKERS, batch_sampler=batch_sampler,
-                                 pin_memory=cfg.DATA_LOADER.PIN_MEMORY, collate_fn=BatchCollator(is_train))
+                                 pin_memory=cfg.DATA_LOADER.PIN_MEMORY, collate_fn=BatchCollator(phase == "train"))
         data_loaders.append(data_loader)
 
     if is_train:
