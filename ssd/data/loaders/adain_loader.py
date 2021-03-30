@@ -14,10 +14,10 @@ class AdainLoader():
         self.transfer_ratio = cfg.ADAIN.LOADER.TRANSFER_RATIO
         self.device = torch.device(cfg.MODEL.DEVICE)
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
+        #dir_path = os.path.dirname(os.path.realpath(__file__))
         sys.path.insert(0, cfg.ADAIN.IMPL_FOLDER)
 
-        from AdaIN.test import get_net, style_transfer, coral
+        from test import get_net, style_transfer, coral
         vgg_path = cfg.ADAIN.MODEL.VGG
         decoder_path = cfg.ADAIN.MODEL.DECODER
         # 1) Import get_net function in order to
@@ -55,8 +55,8 @@ class AdainLoader():
                 content_image = content_image.to(self.device).unsqueeze(0)
                 with torch.no_grad():
                     output = self.style_transfer(
-                        vgg=self.adain_net.vgg,
-                        decoder=self.adain_net.decoder,
+                        vgg=self.adain_net["vgg"],
+                        decoder=self.adain_net["decoder"],
                         content=content_image,
                         style=style_image,
                         alpha=self.alpha
