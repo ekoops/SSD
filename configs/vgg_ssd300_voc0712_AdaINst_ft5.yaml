@@ -27,4 +27,4 @@ ADAIN:
     ALPHA: 1.0
 
 
-OUTPUT_DIR: "outputs/vgg_ssd300_voc0712_AdaINst_ft"
+OUTPUT_DIR: "outputs/vgg_ssd300_voc0712_AdaINst_ft5"
