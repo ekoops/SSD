@@ -1,0 +1,30 @@
+MODEL:
+  NUM_CLASSES: 21
+INPUT:
+  IMAGE_SIZE: 300
+DATASETS:
+  TRAIN: ("voc_2007_trainval", "voc_2012_trainval")
+  TEST: ("clipart_test", )
+SOLVER:
+  MAX_ITER: 130000
+  LR_STEPS: []
+  GAMMA: 0.1
+  BATCH_SIZE: 32
+  LR: 1e-5
+ADAIN:
+  IMPL_FOLDER: "AdaIN"
+  INPUT:
+    STYLE_SIZE: 512
+    STYLE_CROP: False
+    PRESERVE_COLOR: True
+  DATASETS:
+    STYLE: ("clipart_train", )
+  LOADER:
+    TRANSFER_RATIO: 1.0
+  MODEL:
+    VGG: "AdaIN/models/vgg_normalized.pth"
+    DECODER: "AdaIN/models/decoder.pth"
+    ALPHA: 1.0
+
+
+OUTPUT_DIR: "outputs/vgg_ssd300_voc0712_AdaINst_ft6"
